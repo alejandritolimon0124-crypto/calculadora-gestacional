@@ -1,12 +1,51 @@
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/icon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-body {
-  overflow-x: hidden;
-  overflow-y: auto;
-  font-family: Arial, Helvetica, sans-serif;
-}
+    <title>Calculadora Gestacional | Dr. Alex Mercado</title>
+    <meta
+      name="description"
+      content="Obtén fácil y rápido las semanas de gestación de tu bebé con la calculadora gestacional del Dr. Alex Mercado."
+    />
+
+    <meta property="og:title" content="Calculadora Gestacional | Dr. Alex Mercado" />
+    <meta
+      property="og:description"
+      content="Obtén fácil y rápido las semanas de gestación de tu bebé."
+    />
+    <meta
+      property="og:image"
+      content="https://calculadora-gestacional.vercel.app/preview.png"
+    />
+    <meta
+      property="og:url"
+      content="https://calculadora-gestacional.vercel.app/"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Maternidad 360" />
+    <meta property="og:locale" content="es_MX" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Calculadora Gestacional | Dr. Alex Mercado" />
+    <meta
+      name="twitter:description"
+      content="Obtén fácil y rápido las semanas de gestación de tu bebé."
+    />
+    <meta
+      name="twitter:image"
+      content="https://calculadora-gestacional.vercel.app/preview.png"
+    />
+
+    <meta name="theme-color" content="#fff8fa" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Maternidad 360" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
