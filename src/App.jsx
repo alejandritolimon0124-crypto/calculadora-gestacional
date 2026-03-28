@@ -1,12 +1,26 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 
 import logoDoctor from './assets/logo-doctor.png';
 import logoMaternidad from './assets/logo-maternidad.png';
 import logoAXM from './assets/logo-axm.png';
 
+const STORAGE_KEY = 'calcData';
+
+function readSavedData() {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
 function diffInDays(start, end) {
-  const ms = end.setHours(12, 0, 0, 0) - start.setHours(12, 0, 0, 0);
+  const startCopy = new Date(start);
+  const endCopy = new Date(end);
+  const ms = endCopy.setHours(12, 0, 0, 0) - startCopy.setHours(12, 0, 0, 0);
   return Math.floor(ms / (1000 * 60 * 60 * 24));
 }
 
@@ -90,18 +104,29 @@ function inputStyle() {
 }
 
 function smallCard(title, value) {
-  return {
-    title,
-    value,
-  };
+  return { title, value };
 }
 
 export default function App() {
-  const [fur, setFur] = useState('');
-  const [usDate, setUsDate] = useState('');
-  const [usWeeks, setUsWeeks] = useState('');
-  const [usDays, setUsDays] = useState('');
-  const [mode, setMode] = useState('fur');
+  const initialData = readSavedData();
+
+  const [fur, setFur] = useState(initialData.fur || '');
+  const [usDate, setUsDate] = useState(initialData.usDate || '');
+  const [usWeeks, setUsWeeks] = useState(initialData.usWeeks || '');
+  const [usDays, setUsDays] = useState(initialData.usDays || '');
+  const [mode, setMode] = useState(initialData.mode || 'fur');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ fur, usDate, usWeeks, usDays, mode })
+      );
+    } catch {
+      // no-op
+    }
+  }, [fur, usDate, usWeeks, usDays, mode]);
 
   const whatsappLink =
     'https://wa.me/528443934366?text=Hola%20Dr.%20Alex%20Mercado,%20quiero%20agendar%20cita';
@@ -110,14 +135,16 @@ export default function App() {
     let baseDate;
 
     if (mode === 'us' && usDate && usWeeks !== '') {
-      const scanDate = new Date(usDate + 'T12:00:00');
+      const scanDate = new Date(`${usDate}T12:00:00`);
       const baseDays = parseInt(usWeeks || '0', 10) * 7 + parseInt(usDays || '0', 10);
       baseDate = addDays(scanDate, -baseDays);
     } else if (mode === 'fur' && fur) {
-      baseDate = new Date(fur + 'T12:00:00');
+      baseDate = new Date(`${fur}T12:00:00`);
     } else {
       return null;
     }
+
+    if (Number.isNaN(baseDate.getTime())) return null;
 
     const totalDays = diffInDays(baseDate, new Date());
     if (Number.isNaN(totalDays) || totalDays < 0) return null;
@@ -175,7 +202,7 @@ export default function App() {
               color: '#53434a',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
-              textOverflow: 'ellipsis'
+              textOverflow: 'ellipsis',
             }}
           >
             {result ? `Tu bebé tiene ${result.weeks} semanas 💕` : 'Semanas de embarazo al instante'}
@@ -237,7 +264,12 @@ export default function App() {
           {mode === 'fur' ? (
             <div>
               <label style={labelStyle()}>Fecha de última regla</label>
-              <input type="date" value={fur} onChange={(e) => setFur(e.target.value)} style={inputStyle()} />
+              <input
+                type="date"
+                value={fur}
+                onChange={(e) => setFur(e.target.value)}
+                style={inputStyle()}
+              />
               <p style={{ margin: '12px 0 0', fontSize: '13px', color: '#8a7a82' }}>
                 Úsalo cuando la fecha de última menstruación sea confiable.
               </p>
@@ -281,56 +313,55 @@ export default function App() {
           )}
 
           <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-          <a href={whatsappLink} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', flex: 1 }}>
+            <a href={whatsappLink} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', flex: 1 }}>
+              <button
+                style={{
+                  width: '100%',
+                  padding: '15px 10px',
+                  border: 'none',
+                  borderRadius: '16px',
+                  background: '#25D366',
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 14px 24px rgba(37, 211, 102, 0.25)',
+                }}
+              >
+                Agenda una consulta conmigo
+              </button>
+            </a>
+
             <button
+              onClick={() => {
+                const text = 'Mira esta calculadora gestacional que el Dr. Alex Mercado compartió conmigo, te puede servir mucho 💕';
+                const url = window.location.href;
+                if (navigator.share) {
+                  navigator.share({ text, url });
+                } else {
+                  window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`);
+                }
+              }}
               style={{
-                width: '100%',
+                flex: 1,
                 padding: '15px 10px',
                 border: 'none',
                 borderRadius: '16px',
-                background: '#25D366',
+                background: '#ff6f61',
                 color: '#fff',
                 fontSize: '14px',
                 fontWeight: 700,
                 cursor: 'pointer',
-                boxShadow: '0 14px 24px rgba(37, 211, 102, 0.25)',
               }}
             >
-              Agenda una consulta conmigo
+              Compartir con otra mamá
             </button>
-          </a>
-
-          <button
-            onClick={() => {
-              const text = 'Mira esta calculadora gestacional que el Dr. Alex Mercado compartió conmigo, te puede servir mucho 💕';
-              const url = window.location.href;
-              if (navigator.share) {
-                navigator.share({ text, url });
-              } else {
-                window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`);
-              }
-            }}
-            style={{
-              flex: 1,
-              padding: '15px 10px',
-              border: 'none',
-              borderRadius: '16px',
-              background: '#ff6f61',
-              color: '#fff',
-              fontSize: '14px',
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            Compartir con otra mamá
-          </button>
-        </div>
+          </div>
         </div>
 
         <div style={cardStyle()}>
           {result ? (
             <>
-              {/* CTA Diplomado */}
               <div
                 style={{
                   background: 'linear-gradient(135deg, #fff1f5, #ffe4ec)',
