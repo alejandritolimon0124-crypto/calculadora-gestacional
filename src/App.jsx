@@ -6,6 +6,7 @@ import logoMaternidad from './assets/logo-maternidad.png';
 import logoAXM from './assets/logo-axm.png';
 
 const STORAGE_KEY = 'calcData';
+const APP_SHARE_URL = 'https://calculadora-gestacional.vercel.app/?v=6';
 
 function readSavedData() {
   if (typeof window === 'undefined') return {};
@@ -335,13 +336,17 @@ export default function App() {
             <button
               onClick={() => {
                 const text = 'Mira esta calculadora gestacional que el Dr. Alex Mercado compartió conmigo, te puede servir mucho 💕';
-                const shareUrl = new URL(window.location.href);
-                shareUrl.searchParams.set('v', '5');
-                const url = shareUrl.toString();
+                const url = APP_SHARE_URL;
                 if (navigator.share) {
-                  navigator.share({ text, url });
+                  navigator.share({
+                    title: 'Calculadora Gestacional | Dr. Alex Mercado',
+                    text,
+                    url,
+                  });
                 } else {
-                  window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`);
+                  window.open(`https://wa.me/?text=${encodeURIComponent(`${text}
+
+${url}`)}`);
                 }
               }}
               style={{
