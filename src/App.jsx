@@ -335,7 +335,9 @@ export default function App() {
             <button
               onClick={() => {
                 const text = 'Mira esta calculadora gestacional que el Dr. Alex Mercado compartió conmigo, te puede servir mucho 💕';
-                const url = window.location.href;
+                const shareUrl = new URL(window.location.href);
+                shareUrl.searchParams.set('v', '5');
+                const url = shareUrl.toString();
                 if (navigator.share) {
                   navigator.share({ text, url });
                 } else {
