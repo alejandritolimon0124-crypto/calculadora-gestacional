@@ -225,16 +225,20 @@ export default function App() {
             style={{
               margin: '6px 0 2px',
               fontSize: '20px',
-              lineHeight: 1.05,
+              lineHeight: 1.2,
               color: '#53434a',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
             }}
           >
-            {result
-              ? `Tu bebé tiene ${result.weeks} semanas 💕 (${result.trimester})`
-              : 'Semanas de embarazo al instante'}
+            {result ? (
+              <>
+                <div>Tu bebé tiene {result.weeks} semanas 💕</div>
+                <div style={{ fontSize: '16px', fontWeight: 600 }}>
+                  ({result.trimester})
+                </div>
+              </>
+            ) : (
+              'Semanas de embarazo al instante'
+            )}
           </h1>
           <p
             style={{
