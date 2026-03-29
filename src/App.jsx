@@ -231,10 +231,10 @@ export default function App() {
           >
             {result ? (
               <>
-                <div>Tu bebé tiene {result.weeks} semanas 💕</div>
-                <div style={{ fontSize: '16px', fontWeight: 600 }}>
+                <span style={{ display: 'block' }}>Tu bebé tiene {result.weeks} semanas 💕</span>
+                <span style={{ display: 'block', fontSize: '16px', fontWeight: 600 }}>
                   ({result.trimester})
-                </div>
+                </span>
               </>
             ) : (
               'Semanas de embarazo al instante'
