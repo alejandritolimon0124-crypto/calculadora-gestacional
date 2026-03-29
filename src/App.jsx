@@ -335,18 +335,11 @@ export default function App() {
 
             <button
               onClick={() => {
-                const text = 'Mira esta calculadora gestacional que el Dr. Alex Mercado compartió conmigo, te puede servir mucho 💕';
                 const url = APP_SHARE_URL;
                 if (navigator.share) {
-                  navigator.share({
-                    title: 'Calculadora Gestacional | Dr. Alex Mercado',
-                    text,
-                    url,
-                  });
+                  navigator.share({ url });
                 } else {
-                  window.open(`https://wa.me/?text=${encodeURIComponent(`${text}
-
-${url}`)}`);
+                  window.open(`https://wa.me/?text=${encodeURIComponent(url)}`);
                 }
               }}
               style={{
