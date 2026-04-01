@@ -433,7 +433,7 @@ export default function App() {
                   Únete a mi Diplomado Maternidad 360 y vive tu embarazo con información, seguridad y acompañamiento.
                 </div>
                 <a
-                  href="https://wa.me/528443934366?text=Hola%20Dr.%20Alex%20Mercado,%20quiero%20informes%20del%20Diplomado%20Maternidad%20360"
+                  href="https://wa.me/528441892008?text=Hola%20Dr.%20Alex%20Mercado,%20quiero%20informes%20del%20Diplomado%20Maternidad%20360"
                   target="_blank"
                   rel="noreferrer"
                   style={{ textDecoration: 'none' }}
