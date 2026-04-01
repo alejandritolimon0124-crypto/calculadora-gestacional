@@ -144,7 +144,7 @@ export default function App() {
   }, [fur, usDate, usWeeks, usDays, mode]);
 
   const whatsappLink =
-    'https://wa.me/528443934366?text=Hola%20Dr.%20Alex%20Mercado,%20acabo%20de%20usar%20su%20calculadora%20gestacional%20y%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20para%20seguimiento%20de%20mi%20embarazo';
+    'https://wa.me/528441892008?text=Hola%20Dr.%20Alex%20Mercado,%20acabo%20de%20usar%20su%20calculadora%20gestacional%20y%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20para%20seguimiento%20de%20mi%20embarazo';
 
   const result = useMemo(() => {
     let baseDate;
