@@ -75,7 +75,7 @@ export function Symptoms({ currentWeek }) {
       </form>
       {records.length > 0 && <div className="record-list" aria-label="Síntomas guardados">{records.map(record => <div className="record-item" key={record.id}><div><strong>Semana {record.week}</strong><span>{displayDateTime(record.createdAt)}</span><p>{record.symptom}</p></div><button type="button" className="delete-action" aria-label={`Borrar síntoma de la semana ${record.week}`} onClick={() => setRecords(previous => previous.filter(item => item.id !== record.id))}>Borrar</button></div>)}</div>}
     </div>
-    <p className="care-note">Si hay sangrado, dolor intenso, dolor de cabeza fuerte, visión borrosa, salida de líquido o menos movimientos del bebé, contacta a tu equipo médico.</p>
+    <p className="care-note">Si hay sangrado, dolor intenso, dolor de cabeza fuerte, visión borrosa, salida de líquido o menos movimientos del bebé, contáctame de inmediato.</p>
   </section>;
 }
 

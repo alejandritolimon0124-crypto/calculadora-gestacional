@@ -26,19 +26,21 @@ function saved() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') ||
 const initial = saved();
 
 export default function App() {
-  const [mode, setMode] = useState(initial.mode === 'us' ? 'us' : 'fur');
+  const [mode, setMode] = useState(['fur', 'us', 'manual'].includes(initial.mode) ? initial.mode : 'fur');
   const [fur, setFur] = useState(initial.fur || '');
   const [usDate, setUsDate] = useState(initial.usDate || '');
   const [usWeeks, setUsWeeks] = useState(initial.usWeeks || '');
   const [usDays, setUsDays] = useState(initial.usDays || '');
+  const [manualWeeks, setManualWeeks] = useState(initial.manualWeeks ?? '');
+  const [manualDays, setManualDays] = useState(initial.manualDays ?? '');
   const [shareStatus, setShareStatus] = useState('');
   const [activeSection, setActiveSection] = useState(() => window.location.hash === '#urgencias' ? 'urgencias' : 'inicio');
   const today = todayValue();
 
   useEffect(() => {
-    try { localStorage.setItem(KEY, JSON.stringify({ mode, fur, usDate, usWeeks, usDays })); }
+    try { localStorage.setItem(KEY, JSON.stringify({ mode, fur, usDate, usWeeks, usDays, manualWeeks, manualDays })); }
     catch { /* El cálculo también funciona si no se puede guardar. */ }
-  }, [mode, fur, usDate, usWeeks, usDays]);
+  }, [mode, fur, usDate, usWeeks, usDays, manualWeeks, manualDays]);
 
   useEffect(() => {
     const onHashChange = () => setActiveSection(window.location.hash === '#urgencias' ? 'urgencias' : 'inicio');
@@ -54,6 +56,12 @@ export default function App() {
       if (daysBetween(date, new Date()) > 308) return 'Fecha fuera de rango. Revísala.';
       return '';
     }
+    if (mode === 'manual') {
+      if (manualWeeks === '') return manualDays === '' ? '' : 'Ingresa tus semanas.';
+      const weeks = Number(manualWeeks), days = manualDays === '' ? 0 : Number(manualDays);
+      if (!Number.isInteger(weeks) || weeks < 0 || weeks > 42 || !Number.isInteger(days) || days < 0 || days > 6) return 'Usa 0–42 semanas y 0–6 días.';
+      return '';
+    }
     if (!usDate && usWeeks === '' && usDays === '') return '';
     if (!usDate || usWeeks === '') return 'Completa la fecha y las semanas.';
     if (!parseDate(usDate) || usDate > today) return 'Revisa la fecha.';
@@ -61,10 +69,15 @@ export default function App() {
     if (!Number.isInteger(weeks) || weeks < 0 || weeks > 42 || !Number.isInteger(days) || days < 0 || days > 6) return 'Usa 0–42 semanas y 0–6 días.';
     if (weeks * 7 + days + daysBetween(parseDate(usDate), new Date()) > 308) return 'Datos fuera de rango. Revísalos.';
     return '';
-  }, [mode, fur, usDate, usWeeks, usDays, today]);
+  }, [mode, fur, usDate, usWeeks, usDays, manualWeeks, manualDays, today]);
 
   const result = useMemo(() => {
     if (error) return null;
+    if (mode === 'manual') {
+      if (manualWeeks === '') return null;
+      const weeks = Number(manualWeeks), days = Number(manualDays || 0);
+      return { weeks, days, due: addDays(parseDate(today), 280 - weeks * 7 - days), manual: true };
+    }
     let base;
     if (mode === 'fur' && fur) base = parseDate(fur);
     if (mode === 'us' && usDate && usWeeks !== '') base = addDays(parseDate(usDate), -(Number(usWeeks) * 7 + Number(usDays || 0)));
@@ -72,7 +85,7 @@ export default function App() {
     const total = daysBetween(base, new Date());
     if (total < 0 || total > 308) return null;
     return { weeks: Math.floor(total / 7), days: total % 7, due: addDays(base, 280) };
-  }, [mode, fur, usDate, usWeeks, usDays, error]);
+  }, [mode, fur, usDate, usWeeks, usDays, manualWeeks, manualDays, today, error]);
   const growth = result ? babyGrowthAtWeek(result.weeks, result.days) : null;
 
   async function shareCalculator() {
@@ -116,8 +129,11 @@ export default function App() {
           <div className="method-switch" role="group" aria-label="Método de cálculo">
             <button type="button" className={mode === 'fur' ? 'selected' : ''} aria-pressed={mode === 'fur'} onClick={() => setMode('fur')}>Última regla</button>
             <button type="button" className={mode === 'us' ? 'selected' : ''} aria-pressed={mode === 'us'} onClick={() => setMode('us')}>Ultrasonido</button>
+            <button type="button" className={mode === 'manual' ? 'selected' : ''} aria-pressed={mode === 'manual'} onClick={() => setMode('manual')}>Por semana</button>
           </div>
-          {mode === 'fur' ? <div className="fields"><label htmlFor="fur">Primer día de tu última regla</label><input id="fur" type="date" max={today} value={fur} onChange={event => setFur(event.target.value)} /></div> : <div className="fields"><label htmlFor="us-date">Fecha del ultrasonido</label><input id="us-date" type="date" max={today} value={usDate} onChange={event => setUsDate(event.target.value)} /><div className="field-pair"><div><label htmlFor="us-weeks">Semanas</label><input id="us-weeks" type="number" inputMode="numeric" min="0" max="42" placeholder="12" value={usWeeks} onChange={event => setUsWeeks(event.target.value)} /></div><div><label htmlFor="us-days">Días</label><input id="us-days" type="number" inputMode="numeric" min="0" max="6" placeholder="3" value={usDays} onChange={event => setUsDays(event.target.value)} /></div></div></div>}
+          {mode === 'fur' && <div className="fields"><label htmlFor="fur">Primer día de tu última regla</label><input id="fur" type="date" max={today} value={fur} onChange={event => setFur(event.target.value)} /></div>}
+          {mode === 'us' && <div className="fields"><label htmlFor="us-date">Fecha del ultrasonido</label><input id="us-date" type="date" max={today} value={usDate} onChange={event => setUsDate(event.target.value)} /><div className="field-pair"><div><label htmlFor="us-weeks">Semanas</label><input id="us-weeks" type="number" inputMode="numeric" min="0" max="42" placeholder="12" value={usWeeks} onChange={event => setUsWeeks(event.target.value)} /></div><div><label htmlFor="us-days">Días</label><input id="us-days" type="number" inputMode="numeric" min="0" max="6" placeholder="3" value={usDays} onChange={event => setUsDays(event.target.value)} /></div></div></div>}
+          {mode === 'manual' && <div className="fields"><p className="manual-prompt">¿Cuántas semanas tienes hoy?</p><div className="field-pair manual-pair"><div><label htmlFor="manual-weeks">Semanas</label><input id="manual-weeks" type="number" inputMode="numeric" min="0" max="42" placeholder="Ej. 20" value={manualWeeks} onChange={event => setManualWeeks(event.target.value)} /></div><div><label htmlFor="manual-days">Días</label><input id="manual-days" type="number" inputMode="numeric" min="0" max="6" placeholder="0" value={manualDays} onChange={event => setManualDays(event.target.value)} /></div></div></div>}
           {error && <p className="error-message" role="alert">{error}</p>}
           <div className="entry-share"><button className="share-button" type="button" onClick={shareCalculator}><span aria-hidden="true">↗</span> Compartir calculadora</button><span role="status">{shareStatus}</span></div>
         </section>
@@ -132,8 +148,8 @@ export default function App() {
             <div className="facts-row">
               <div className="fact"><span>FECHA EN QUE CUMPLES 40 SEMANAS</span><strong>{formatDate(result.due)}</strong></div>
             </div>
-            <p className="result-note">Ilustración y medidas orientativas. Las 40 semanas son una referencia, no un límite médico.</p>
-          </> : <div className="empty-result"><span aria-hidden="true">♡</span><strong>Tu bebé, semana a semana</strong><p>Ingresa una fecha para ver tu resultado.</p></div>}
+            <p className="result-note">{result.manual ? 'Fecha calculada con las semanas que escribiste. Ilustración y medidas orientativas.' : 'Ilustración y medidas orientativas. Las 40 semanas son una referencia, no un límite médico.'}</p>
+          </> : <div className="empty-result"><span aria-hidden="true">♡</span><strong>Tu bebé, semana a semana</strong><p>{mode === 'manual' ? 'Escribe tus semanas para ver a tu bebé.' : 'Ingresa una fecha para ver tu resultado.'}</p></div>}
         </section>
       </div>
       <div className="share-actions"><button className="share-button" type="button" onClick={shareCalculator}><span aria-hidden="true">↗</span> Compartir calculadora</button><span role="status">{shareStatus}</span></div>
