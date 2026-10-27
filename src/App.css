@@ -1,15 +1,89 @@
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-}
+.app-shell{min-height:100vh;background:linear-gradient(180deg,#fff5f4 0%,#fff9f7 55%,#fffdfb 100%)}
+.wrap{width:min(1000px,calc(100% - 36px));margin:auto}
+.brand-bar{position:sticky;top:0;z-index:20;background:#fff7f4ed;border-bottom:1px solid #f0ddd9;backdrop-filter:blur(12px)}
+.brand-inner{height:74px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand-inner img{display:block;width:220px;height:auto;max-height:62px;object-fit:contain}
+.booking-button{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:12px 19px;background:#805158;color:#fff;text-decoration:none;font-size:13px;font-weight:700;white-space:nowrap}
+.booking-button:hover{background:#694147}
+.main-content{padding:21px 0 26px}
+.page-title{font-family:Fraunces,Georgia,serif;font-size:clamp(28px,3vw,39px);line-height:1.1;font-weight:500;letter-spacing:-.04em;color:#654347;margin:0 0 16px}
+.main-grid{display:grid;grid-template-columns:minmax(270px,.72fr) minmax(0,1.28fr);gap:16px;align-items:start}
+.entry-card,.summary-card{border:1px solid #efdeda;border-radius:23px;box-shadow:0 18px 42px #9d6b6b14}
+.entry-card{background:#fffdfc;padding:22px}
+.method-switch{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;border-radius:13px;background:#f8ebe9;margin-bottom:20px}
+.method-switch button{border:0;border-radius:9px;padding:12px 7px;background:transparent;color:#8d6d6b;font-weight:700;font-size:12px}
+.method-switch button.selected{background:#fff;color:#824c53;box-shadow:0 3px 11px #79535520}
+.fields label{display:block;font-size:12px;font-weight:700;color:#684f52;margin-bottom:8px}
+.fields input{width:100%;height:47px;border:1px solid #e2d0ce;border-radius:10px;background:#fff;color:#503f41;padding:0 12px;outline:none;color-scheme:light}
+.fields input:focus{border-color:#be7c86;box-shadow:0 0 0 3px #f4dfe1}
+.field-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+.error-message{font-size:12px;color:#a33f4a;background:#fff0ef;border-radius:8px;padding:8px 10px;margin:11px 0 0}
+.summary-card{background:radial-gradient(circle at 50% 20%,#fff9f9 0,#ffece9 54%,#f8dcd8 100%);min-height:470px;padding:12px 24px 18px;display:flex;align-items:center;justify-content:center}
+.summary-card.ready{display:block}
+.visual-scene{height:263px;position:relative;display:flex;justify-content:center;align-items:center;overflow:hidden}
+.visual-scene:before{content:'';position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:280px;height:230px;border-radius:50%;background:#fff8f7b0;filter:blur(14px)}
+.baby-visual{position:relative;z-index:1;width:260px;height:253px;display:grid;place-items:center}
+.baby-visual img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;mask-image:radial-gradient(ellipse at center,#000 47%,transparent 76%)}
+.baby-visual>span{font-size:80px;color:#ba7d80}
+.compare-visual{position:absolute;z-index:2;right:7%;bottom:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:122px;min-height:122px;padding:8px;border:2px solid #fff;background:#fff9f4ec;border-radius:50%;box-shadow:0 12px 26px #b76e6e2e;transform:rotate(8deg)}
+.compare-emoji{font-size:60px;line-height:1;font-family:'Segoe UI Emoji',sans-serif}
+.compare-name{font-size:10px;font-weight:700;color:#805a5c;text-align:center;line-height:1.1;max-width:95px}
+.week-display{text-align:center;margin:-3px 0 16px;position:relative;z-index:3}
+.week-display strong{font-family:Fraunces,Georgia,serif;font-size:33px;font-weight:600;letter-spacing:-.045em;color:#7d4b4f}
+.facts-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fact{background:#fffaf9e8;border:1px solid #f4e2df;border-radius:14px;padding:12px 13px;min-height:73px}
+.fact span{display:block;font-size:9px;letter-spacing:.07em;font-weight:700;color:#ad7479}
+.fact strong{display:block;font-size:18px;line-height:1.17;color:#68484d;margin-top:6px;font-family:Fraunces,Georgia,serif;font-weight:500}
+.result-note{text-align:center;font-size:10px;color:#936f70;line-height:1.3;margin:11px 0 0}
+.empty-result{text-align:center}.empty-result>span{display:block;font-size:70px;line-height:1;color:#c58389}.empty-result strong{font-family:Fraunces,Georgia,serif;display:block;font-size:28px;font-weight:500;color:#754d51;margin:13px 0}.empty-result p{font-size:13px;color:#967377}
+.share-actions{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:13px}
+.share-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:47px;padding:11px 23px;border:0;border-radius:13px;background:#d46875;color:#fff;font-size:14px;font-weight:700;box-shadow:0 9px 21px #c7607040}
+.share-button:hover{background:#ba5361}.share-button:focus-visible{outline:3px solid #74494f;outline-offset:3px}
+.share-actions [role=status]{font-size:12px;color:#705759}
+@media(max-width:760px){.wrap{width:min(100% - 22px,500px)}.brand-inner{height:62px;gap:6px}.brand-inner img{width:164px;max-height:48px}.booking-button{padding:9px 11px;font-size:10px}.main-content{padding:13px 0 16px}.page-title{font-size:25px;margin:0 0 11px}.main-grid{grid-template-columns:1fr;gap:8px}.entry-card{padding:12px 14px}.method-switch{margin-bottom:10px}.method-switch button{padding:9px 6px}.fields label{font-size:11px;margin-bottom:6px}.fields input{height:40px}.field-pair{margin-top:9px}.summary-card{min-height:345px;padding:5px 12px 10px}.visual-scene{height:203px}.baby-visual{width:200px;height:200px}.compare-visual{width:96px;min-height:96px;right:4%;bottom:8px}.compare-emoji{font-size:45px}.compare-name{font-size:8px;max-width:79px}.week-display{margin:-5px 0 9px}.week-display strong{font-size:28px}.fact{min-height:58px;padding:8px 10px}.fact span{font-size:8px}.fact strong{font-size:15px;margin-top:4px}.result-note{font-size:9px;margin:7px 0 0}.share-actions{margin-top:8px;flex-direction:column;align-items:stretch;gap:4px}.share-button{width:100%;min-height:44px}.share-actions [role=status]{text-align:center}.empty-result>span{font-size:56px}.empty-result strong{font-size:24px}}
+@media(max-width:370px){.brand-inner img{width:145px}.page-title{font-size:23px}.visual-scene{height:184px}.baby-visual{width:180px;height:180px}.compare-visual{width:87px;min-height:87px}.compare-emoji{font-size:41px}.week-display strong{font-size:25px}.fact strong{font-size:13px}}
+/* La fruta y su texto quedan nivelados; la rotación hacía que “limón” se viera ondulado. */
+.compare-visual{transform:none}
+.compare-name{font-size:11px;line-height:1.15}
+.facts-row{grid-template-columns:1fr}
+.fact{text-align:center;min-height:0}
+.length-line{position:relative;z-index:3;text-align:center;margin:-5px 0 4px;color:#8d5a5e;font-size:14px;font-weight:600}
+.length-line strong{font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:600;color:#74464c;white-space:nowrap}
+.length-line small{display:block;font-size:10px;color:#9f7777;font-weight:500;margin-top:1px}
+@media(max-width:760px){.compare-visual{width:104px;min-height:104px}.compare-name{font-size:10px}.length-line{font-size:12px;margin:-8px 0 3px}.length-line strong{font-size:17px}.length-line small{font-size:9px}.fact{min-height:50px}}
+@media(max-width:370px){.compare-visual{width:94px;min-height:94px}.compare-name{font-size:9px}}
+.brand-inner{height:auto;min-height:90px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:8px 0}
+.brand-inner img{grid-column:2;width:300px;max-height:74px}
+.booking-button{grid-column:3;justify-self:end;min-height:48px;padding:13px 22px;font-size:15px;box-shadow:0 5px 15px #80515828}
+@media(max-width:760px){.brand-inner.wrap{width:100%;padding:5px 6px}.brand-inner{min-height:70px;grid-template-columns:auto minmax(0,1fr);justify-items:stretch;gap:4px}.brand-inner img{grid-column:1;justify-self:start;width:190px;max-height:58px}.booking-button{grid-column:2;justify-self:end;min-height:45px;padding:9px 11px;font-size:15px}}
+@media(max-width:370px){.brand-inner img{width:150px}.booking-button{padding:9px 8px;font-size:14px}}
 
-* {
-  box-sizing: border-box;
+/* El resultado y sus controles usan una escala legible en celular. */
+.method-switch button,.fields label,.error-message{font-size:15px}
+.fields input{font-size:16px}
+.compare-name{font-size:14px;line-height:1.15;max-width:105px}
+.fact span{font-size:12px;line-height:1.25;letter-spacing:.02em}
+.fact strong{font-size:21px}
+.result-note,.empty-result p,.share-actions [role=status]{font-size:13px;line-height:1.4}
+.share-button{font-size:16px}
+.length-line{font-size:16px}
+.length-line strong{font-size:23px}
+.length-line small{font-size:12px;line-height:1.25}
+.visual-scene{height:242px}
+.baby-visual{height:238px}
+@media(max-width:760px){
+  .page-title{font-size:28px}
+  .method-switch button,.fields label{font-size:15px}
+  .compare-visual{width:112px;min-height:112px}
+  .visual-scene{height:190px}
+  .baby-visual{height:190px}
+  .compare-name{font-size:13px;max-width:92px}
+  .length-line{font-size:15px}
+  .length-line strong{font-size:21px}
+  .length-line small{font-size:11px}
+  .fact span{font-size:12px}
+  .fact strong{font-size:19px}
+  .result-note{font-size:12px}
+  .share-button{font-size:16px}
 }
-
-body {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+@media(max-width:370px){.page-title{font-size:26px}.compare-visual{width:102px;min-height:102px}.compare-name{font-size:12px}.fact strong{font-size:18px}}

@@ -8,12 +8,16 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icon-192.png', 'icon-512.png'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,png,jpg,webmanifest}'],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024
+      },
       manifest: {
-        name: 'Calculadora Gestacional',
-        short_name: 'Gestación',
-        description: 'Calcula semanas de embarazo fácilmente',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        name: 'Mi embarazo · Dr. Alex Mercado',
+        short_name: 'Mi embarazo',
+        description: 'Semanas de embarazo, citas, síntomas, contracciones y dietas',
+        theme_color: '#fbf8f4',
+        background_color: '#fbf8f4',
         display: 'standalone',
         start_url: '/',
         icons: [

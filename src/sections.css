@@ -1,0 +1,116 @@
+.app-nav{position:fixed;z-index:30;bottom:0;left:0;right:0;background:#fffaf8f5;border-top:1px solid #efdcd8;backdrop-filter:blur(14px);box-shadow:0 -7px 25px #6b434315}
+.app-nav-inner{display:grid;grid-template-columns:repeat(6,1fr);max-width:760px;margin:auto;padding:5px 8px max(5px,env(safe-area-inset-bottom))}
+.app-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:56px;border:0;border-radius:13px;background:transparent;color:#886b6f;font-size:21px;cursor:pointer}
+.app-nav button small{font-size:11px;font-weight:700}
+.app-nav button.active{color:#a54861;background:#fce9ea}
+.app-nav button.urgent-nav-button{position:relative;z-index:1;color:#b22441}
+.app-nav button.urgent-nav-button>span{width:48px;height:48px;margin-top:-23px;display:grid;place-items:center;border-radius:50%;background:#c62e4c;color:white;font-size:27px;font-weight:900;border:4px solid #fffaf8;box-shadow:0 7px 16px #a1394a4d}
+.app-nav button.urgent-nav-button small{font-weight:850;color:#a8203c}
+.app-nav button.urgent-nav-button.active{background:#fce5e9}
+.app-nav button:focus-visible,.tool-page button:focus-visible{outline:3px solid #a54861;outline-offset:2px}
+.main-content{padding-bottom:105px}
+.entry-share{display:grid;gap:5px;margin-top:18px}
+.entry-share .share-button{width:100%}
+.entry-share [role=status]{font-size:12px;text-align:center;color:#705759}
+.main-content>.share-actions{display:none}
+.tool-page{max-width:680px;margin:0 auto;display:grid;gap:14px;color:#634a50}
+.tool-heading{display:flex;align-items:center;gap:13px;margin:6px 0 3px}
+.tool-heading-icon{width:54px;height:54px;border-radius:17px;background:#fae5e5;display:grid;place-items:center;color:#a35063;font-size:26px;flex:none}
+.tool-heading h1{font:600 clamp(28px,4vw,38px)/1.12 Fraunces,Georgia,serif;letter-spacing:-.04em;margin:0;color:#75494f}
+.tool-heading p{font-size:14px;margin:5px 0 0;color:#8c7075}
+.tool-card{background:#fffdfc;border:1px solid #efdeda;border-radius:23px;padding:22px;box-shadow:0 15px 36px #9d6b6b12;min-width:0}
+.tool-card h2{font:600 23px/1.2 Fraunces,Georgia,serif;margin:0 0 15px;color:#74464c}
+.stack-form{display:grid;gap:10px}
+.stack-form label{font-size:13px;font-weight:700;color:#674f54}
+.stack-form input,.stack-form textarea{width:100%;border:1px solid #dec8c8;border-radius:11px;background:#fff;color:#4f4044;padding:11px 13px;font:inherit;color-scheme:light}
+.stack-form input{min-height:48px}
+.stack-form textarea{resize:vertical}
+.stack-form input:focus,.stack-form textarea:focus{outline:3px solid #f7dfe2;border-color:#b86b7a}
+.primary-action,.secondary-action{border:0;border-radius:12px;min-height:46px;padding:10px 18px;font-weight:750;font-size:14px;cursor:pointer}
+.primary-action{background:#b94f68;color:white;box-shadow:0 6px 16px #b94f6825}
+.primary-action:hover{background:#a7415a}
+.secondary-action{background:#f8e7e9;color:#864554}
+.text-action,.delete-action{border:0;background:none;color:#a04459;font-size:12px;font-weight:700;text-decoration:underline;cursor:pointer}
+.text-action{margin-top:15px}
+.saved-highlight{display:grid;gap:5px;background:#fff0f0;border:1px solid #f0d8da;border-radius:15px;padding:16px;margin-bottom:17px}
+.saved-highlight span{font-size:10px;font-weight:800;letter-spacing:.08em;color:#a56b73}
+.saved-highlight strong{font:600 24px Fraunces,Georgia,serif;color:#75464e}
+.storage-note{font-size:12px;color:#947b7c;line-height:1.4;margin:0 2px}
+.subtabs,.diet-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.diet-tabs{grid-template-columns:repeat(4,1fr)}
+.subtabs button,.diet-tabs button{border:1px solid #efdbdd;border-radius:11px;min-height:42px;padding:7px;background:#fff7f7;color:#855e65;font-size:12px;font-weight:700;cursor:pointer}
+.subtabs button.active,.diet-tabs button.active{background:#b94f68;border-color:#b94f68;color:#fff}
+.range-label{font-size:13px;color:#9b6370;font-weight:750;margin:14px 0 12px}
+.symptom-chips{display:flex;flex-wrap:wrap;gap:8px}
+.symptom-chips span{display:inline-block;border:1px solid #f0d9dd;background:#fff5f6;color:#765057;border-radius:999px;padding:9px 12px;font-size:13px}
+.record-list{margin-top:18px;border-top:1px solid #f2e4e2}
+.record-item{display:flex;justify-content:space-between;align-items:start;gap:12px;padding:13px 1px;border-bottom:1px solid #f2e4e2}
+.record-item strong,.record-item span{display:block}
+.record-item strong{font-size:14px;color:#69474d}
+.record-item span{font-size:11px;color:#9b8585;margin-top:2px}
+.record-item p{font-size:14px;margin:7px 0 0;overflow-wrap:anywhere}
+.care-note{font-size:13px;line-height:1.45;background:#fff0ed;border-left:4px solid #c96777;border-radius:7px;padding:12px 14px;margin:0;color:#754a50}
+.tool-card .care-note{margin-top:18px}
+.short-help{font-size:13px;margin:-4px 0 15px;color:#8e7276}
+.timer-display{text-align:center;font:650 64px/1 Fraunces,Georgia,serif;color:#914c5c;background:#fff3f3;border-radius:17px;padding:25px 10px 20px;font-variant-numeric:tabular-nums}
+.timer-display span{display:block;margin-top:8px;font:600 11px system-ui,sans-serif;letter-spacing:.08em;color:#a57b82;text-transform:uppercase}
+.timer-button{width:100%;margin-top:14px}
+.count-line{font-size:14px;margin-top:17px}
+.diet-instructions{padding-left:24px;margin:0;display:grid;gap:9px;font-size:14px;line-height:1.4}
+.diet-instructions li::marker{font-weight:800;color:#c35671}
+.example-note{font-size:13px;background:#fff1f2;border-radius:10px;padding:10px 12px;margin:16px 0 0;line-height:1.4}
+.diet-image-card h2{margin-bottom:0}
+.diet-image-card .range-label{margin:4px 0 12px}
+.diet-image-button{width:100%;display:block;border:0;background:#f7eeed;padding:0;border-radius:11px;overflow:hidden;cursor:zoom-in}
+.diet-image-button img{width:100%;height:auto;display:block}
+.diet-image-card .secondary-action{width:100%;margin-top:12px}
+.image-overlay{position:fixed;z-index:50;inset:0;background:#221a1ddd;padding:12px;display:grid;place-items:center}
+.image-dialog{background:#fff;border-radius:15px;width:min(100%,1000px);max-height:calc(100vh - 24px);display:flex;flex-direction:column;overflow:hidden}
+.close-image{align-self:flex-end;border:0;background:#a6485e;color:#fff;font-size:13px;font-weight:700;padding:12px 18px;cursor:pointer}
+.image-scroll{overflow:auto;max-height:calc(100vh - 70px)}
+.image-scroll img{display:block;width:max(100%,800px);height:auto}
+.emergency-page{max-width:600px;gap:13px}
+.emergency-heading{text-align:center;padding:18px 8px 4px;color:#832f45}
+.emergency-heading-icon{display:grid;place-items:center;width:72px;height:72px;margin:0 auto 10px;border-radius:22px;background:#c62e4c;color:white;font-size:42px;box-shadow:0 10px 24px #c62e4c3a}
+.emergency-heading h1{font:650 clamp(34px,6vw,45px)/1 Fraunces,Georgia,serif;margin:0}
+.emergency-heading p{font-size:15px;font-weight:700;margin:7px 0 0}
+.emergency-card h2{margin-bottom:7px}
+.emergency-card>p{font-size:13px;color:#876e73;margin:0 0 15px}
+.emergency-call,.emergency-map{display:flex;align-items:center;justify-content:center;gap:12px;min-height:64px;border-radius:15px;text-decoration:none;font-weight:800;text-align:center}
+.emergency-call{background:#bc2948;color:#fff;font-size:15px;padding:12px}
+.emergency-call>span:first-child{font-size:27px}
+.emergency-call strong{display:block;font-size:25px;letter-spacing:.02em;margin-top:2px}
+.emergency-map{background:#774d56;color:#fff;padding:12px 18px;font-size:15px}
+.emergency-map>span{font-size:24px}
+.emergency-card address{font-size:18px;line-height:1.35;font-weight:700;font-style:normal;color:#69464e;margin:7px 0 17px}
+.emergency-share{display:flex;align-items:center;justify-content:center;gap:10px;border:2px solid #bb5167;border-radius:13px;min-height:53px;background:#fff;color:#a22c49;font-size:15px;font-weight:800;cursor:pointer}
+.emergency-share-status{text-align:center;margin:-8px 0 0;font-size:12px;color:#7d515b;min-height:0}
+@media(max-width:760px){.entry-share{display:none}.main-content>.share-actions{display:flex}.main-content{padding-bottom:100px}.tool-page{gap:10px}.tool-heading{margin:0 0 3px}.tool-heading-icon{width:46px;height:46px;font-size:22px}.tool-heading h1{font-size:27px}.tool-heading p{font-size:12px}.tool-card{padding:16px;border-radius:17px}.tool-card h2{font-size:21px}.app-nav button{min-height:54px;font-size:20px}.app-nav button small{font-size:10px}.subtabs button,.diet-tabs button{font-size:10px;padding:5px 3px}.saved-highlight strong{font-size:21px}.timer-display{font-size:52px}}
+@media(max-width:500px){.diet-tabs{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.app-nav-inner{padding-left:2px;padding-right:2px}.app-nav button{font-size:18px}.app-nav button small{font-size:9px}.app-nav button.urgent-nav-button>span{width:51px;height:51px;font-size:29px}.emergency-heading{padding-top:7px}.emergency-card address{font-size:16px}}
+
+/* Lectura cómoda: los textos de apoyo y controles deben poder leerse sin ampliar la pantalla. */
+.app-shell{font-size:16px;line-height:1.45}
+.app-nav button small{font-size:12px;line-height:1.1;letter-spacing:-.02em}
+.tool-heading p{font-size:16px;line-height:1.35}
+.tool-card h2{font-size:25px}
+.stack-form label,.range-label,.short-help,.storage-note,.care-note,.example-note,.emergency-card>p{font-size:15px;line-height:1.45}
+.stack-form input,.stack-form textarea{font-size:16px}
+.primary-action,.secondary-action,.text-action,.delete-action,.close-image{font-size:16px}
+.subtabs button,.diet-tabs button{font-size:15px;line-height:1.2;min-height:48px}
+.symptom-chips span{font-size:15px;line-height:1.25;padding:10px 14px}
+.record-item strong,.record-item p,.count-line,.diet-instructions{font-size:16px}
+.record-item span,.saved-highlight span,.timer-display span{font-size:13px}
+.emergency-share-status,.entry-share [role=status]{font-size:14px}
+@media(max-width:760px){
+  .tool-heading h1{font-size:30px}
+  .tool-heading p{font-size:15px}
+  .tool-card h2{font-size:24px}
+  .app-nav button small{font-size:11.5px}
+  .subtabs button,.diet-tabs button{font-size:14px;padding:8px 4px}
+  .saved-highlight strong{font-size:24px}
+}
+@media(max-width:370px){.app-nav button small{font-size:10.5px}}
+.water-guidance{background:#eef8f6;border-left-color:#5aafa2;color:#365e5a}
+.water-call{display:flex;align-items:center;justify-content:center;min-height:48px;margin-top:13px;padding:9px 13px;border-radius:12px;background:#a54861;color:#fff;text-align:center;text-decoration:none;font-size:16px;font-weight:800}
+.water-warning{margin:12px 0 0;color:#80565e;font-size:14px;line-height:1.45}

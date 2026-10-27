@@ -1,594 +1,143 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { babyGrowthAtWeek } from './babyGrowth';
+import doctorLogo from './assets/logo-doctor-cropped.png';
+import { Appointments, Symptoms, Labor, Diets } from './sections';
+import Emergency from './Emergency';
 import './App.css';
+import './sections.css';
 
-import logoDoctor from './assets/logo-doctor.png';
-import logoMaternidad from './assets/logo-maternidad.png';
-import logoAXM from './assets/logo-axm.png';
+const KEY = 'calcData';
+const DAY = 86400000;
+const SHARE_URL = 'https://calculadora-gestacional.vercel.app/';
+const APPOINTMENT_URL = 'https://wa.me/528446001824?text=Hola%20Dr.%20Alex%20Mercado%2C%20me%20gustar%C3%ADa%20reservar%20una%20cita.';
 
-const STORAGE_KEY = 'calcData';
-const APP_SHARE_URL = 'https://calculadora-gestacional.vercel.app/?v=7';
-
-function readSavedData() {
-  if (typeof window === 'undefined') return {};
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
+function parseDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(year, month - 1, day, 12);
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
 }
-
-function diffInDays(start, end) {
-  const startCopy = new Date(start);
-  const endCopy = new Date(end);
-  const ms = endCopy.setHours(12, 0, 0, 0) - startCopy.setHours(12, 0, 0, 0);
-  return Math.floor(ms / (1000 * 60 * 60 * 24));
-}
-
-function addDays(date, days) {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
-}
-
-function formatDate(date) {
-  return new Intl.DateTimeFormat('es-MX', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  }).format(date);
-}
-
-function gestationFromDays(totalDays) {
-  const weeks = Math.floor(totalDays / 7);
-  const days = totalDays % 7;
-  return { weeks, days };
-}
-
-function trimesterFromWeeks(weeks) {
-  if (weeks <= 13) return 'Primer trimestre';
-  if (weeks <= 27) return 'Segundo trimestre';
-  return 'Tercer trimestre';
-}
-
-function approximateBabyData(weeks) {
-  const table = [
-    { w: 8, length: '1.6 cm', weight: '< 2 g' },
-    { w: 12, length: '5.4 cm', weight: '14 g' },
-    { w: 16, length: '11.6 cm', weight: '100 g' },
-    { w: 20, length: '16.4 cm', weight: '300 g' },
-    { w: 24, length: '30 cm', weight: '600 g' },
-    { w: 28, length: '37.6 cm', weight: '1 kg' },
-    { w: 32, length: '42.4 cm', weight: '1.7 kg' },
-    { w: 36, length: '47.4 cm', weight: '2.6 kg' },
-    { w: 40, length: '51.2 cm', weight: '3.4 kg' },
-  ];
-
-  let closest = table[0];
-  for (const item of table) {
-    if (weeks >= item.w) closest = item;
-  }
-  return closest;
-}
-
-function weeklyTips(weeks) {
-  if (weeks < 12) return 'Etapa clave: inicia ácido fólico y control prenatal temprano.';
-  if (weeks < 20) return 'Momento ideal para ultrasonido estructural y seguimiento médico.';
-  if (weeks < 28) return 'Vigila movimientos fetales, crecimiento y tus controles.';
-  if (weeks < 36) return 'Controla presión arterial y reconoce signos de alarma.';
-  return 'Preparación para parto: monitoreo cercano y valoración final.';
-}
-
-function urgencyMessage(weeks) {
-  if (weeks < 12) return 'Primera etapa crítica: agenda tu valoración.';
-  if (weeks < 28) return 'Seguimiento adecuado = embarazo más seguro.';
-  return 'Etapa final: evita riesgos y acude a revisión.';
-}
-
-function cardStyle() {
-  return {
-    background: '#ffffff',
-    borderRadius: '24px',
-    padding: '24px',
-    boxShadow: '0 18px 45px rgba(125, 98, 115, 0.12)',
-    border: '1px solid rgba(214, 188, 196, 0.4)',
-  };
-}
-
-function labelStyle() {
-  return {
-    display: 'block',
-    fontSize: '14px',
-    fontWeight: 700,
-    color: '#6d5a63',
-    marginBottom: '8px',
-  };
-}
-
-function inputStyle() {
-  return {
-    width: '100%',
-    padding: '14px 16px',
-    borderRadius: '14px',
-    border: '1px solid #d9c7ce',
-    background: '#fff',
-    fontSize: '15px',
-    boxSizing: 'border-box',
-    outline: 'none',
-  };
-}
-
-function smallCard(title, value) {
-  return { title, value };
-}
+function addDays(date, days) { const next = new Date(date); next.setDate(next.getDate() + days); return next; }
+function daysBetween(start, end) { return Math.round((Date.UTC(end.getFullYear(), end.getMonth(), end.getDate()) - Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())) / DAY); }
+function formatDate(date) { return new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }).format(date); }
+function formatLength(value) { return new Intl.NumberFormat('es-MX', { maximumFractionDigits: 1 }).format(value); }
+function todayValue() { const now = new Date(); return [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-'); }
+function saved() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch { return {}; } }
+const initial = saved();
 
 export default function App() {
-  const initialData = readSavedData();
-
-  const [fur, setFur] = useState(initialData.fur || '');
-  const [usDate, setUsDate] = useState(initialData.usDate || '');
-  const [usWeeks, setUsWeeks] = useState(initialData.usWeeks || '');
-  const [usDays, setUsDays] = useState(initialData.usDays || '');
-  const [mode, setMode] = useState(initialData.mode || 'fur');
+  const [mode, setMode] = useState(initial.mode === 'us' ? 'us' : 'fur');
+  const [fur, setFur] = useState(initial.fur || '');
+  const [usDate, setUsDate] = useState(initial.usDate || '');
+  const [usWeeks, setUsWeeks] = useState(initial.usWeeks || '');
+  const [usDays, setUsDays] = useState(initial.usDays || '');
+  const [shareStatus, setShareStatus] = useState('');
+  const [activeSection, setActiveSection] = useState(() => window.location.hash === '#urgencias' ? 'urgencias' : 'inicio');
+  const today = todayValue();
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    try {
-      window.localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ fur, usDate, usWeeks, usDays, mode })
-      );
-    } catch {
-      // no-op
-    }
-  }, [fur, usDate, usWeeks, usDays, mode]);
+    try { localStorage.setItem(KEY, JSON.stringify({ mode, fur, usDate, usWeeks, usDays })); }
+    catch { /* El cálculo también funciona si no se puede guardar. */ }
+  }, [mode, fur, usDate, usWeeks, usDays]);
 
-  const whatsappLink =
-    'https://wa.me/528443934366?text=Hola%20Dr.%20Alex%20Mercado,%20acabo%20de%20usar%20su%20calculadora%20gestacional%20y%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20para%20seguimiento%20de%20mi%20embarazo';
+  useEffect(() => {
+    const onHashChange = () => setActiveSection(window.location.hash === '#urgencias' ? 'urgencias' : 'inicio');
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  const error = useMemo(() => {
+    if (mode === 'fur') {
+      if (!fur) return '';
+      const date = parseDate(fur);
+      if (!date || fur > today) return 'Revisa la fecha.';
+      if (daysBetween(date, new Date()) > 308) return 'Fecha fuera de rango. Revísala.';
+      return '';
+    }
+    if (!usDate && usWeeks === '' && usDays === '') return '';
+    if (!usDate || usWeeks === '') return 'Completa la fecha y las semanas.';
+    if (!parseDate(usDate) || usDate > today) return 'Revisa la fecha.';
+    const weeks = Number(usWeeks), days = usDays === '' ? 0 : Number(usDays);
+    if (!Number.isInteger(weeks) || weeks < 0 || weeks > 42 || !Number.isInteger(days) || days < 0 || days > 6) return 'Usa 0–42 semanas y 0–6 días.';
+    if (weeks * 7 + days + daysBetween(parseDate(usDate), new Date()) > 308) return 'Datos fuera de rango. Revísalos.';
+    return '';
+  }, [mode, fur, usDate, usWeeks, usDays, today]);
 
   const result = useMemo(() => {
-    let baseDate;
+    if (error) return null;
+    let base;
+    if (mode === 'fur' && fur) base = parseDate(fur);
+    if (mode === 'us' && usDate && usWeeks !== '') base = addDays(parseDate(usDate), -(Number(usWeeks) * 7 + Number(usDays || 0)));
+    if (!base) return null;
+    const total = daysBetween(base, new Date());
+    if (total < 0 || total > 308) return null;
+    return { weeks: Math.floor(total / 7), days: total % 7, due: addDays(base, 280) };
+  }, [mode, fur, usDate, usWeeks, usDays, error]);
+  const growth = result ? babyGrowthAtWeek(result.weeks, result.days) : null;
 
-    if (mode === 'us' && usDate && usWeeks !== '') {
-      const scanDate = new Date(`${usDate}T12:00:00`);
-      const baseDays = parseInt(usWeeks || '0', 10) * 7 + parseInt(usDays || '0', 10);
-      baseDate = addDays(scanDate, -baseDays);
-    } else if (mode === 'fur' && fur) {
-      baseDate = new Date(`${fur}T12:00:00`);
-    } else {
-      return null;
-    }
-
-    if (Number.isNaN(baseDate.getTime())) return null;
-
-    const totalDays = diffInDays(baseDate, new Date());
-    if (Number.isNaN(totalDays) || totalDays < 0) return null;
-
-    const { weeks, days } = gestationFromDays(totalDays);
-
-    return {
-      weeks,
-      days,
-      trimester: trimesterFromWeeks(weeks),
-      fpp: addDays(baseDate, 280),
-      baby: approximateBabyData(weeks),
-      tip: weeklyTips(weeks),
-      urgency: urgencyMessage(weeks),
-    };
-  }, [fur, usDate, usWeeks, usDays, mode]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !result) return;
+  async function shareCalculator() {
     try {
-      const current = parseInt(window.localStorage.getItem('usageCount') || '0', 10);
-      window.localStorage.setItem('usageCount', String(current + 1));
-    } catch {
-      // no-op
+      if (navigator.share) {
+        await navigator.share({ title: 'Calculadora de embarazo', url: SHARE_URL });
+        return;
+      }
+      await navigator.clipboard.writeText(SHARE_URL);
+      setShareStatus('Enlace copiado');
+    } catch (error) {
+      if (error.name !== 'AbortError') setShareStatus('No se pudo compartir');
     }
-  }, [result?.weeks, result?.days, result?.trimester]);
-
-  const dataCards = result
-    ? [
-        smallCard('Trimestre actual', result.trimester),
-        smallCard('Fecha probable de parto', formatDate(result.fpp)),
-        smallCard('Longitud aproximada', result.baby.length),
-        smallCard('Peso aproximado', result.baby.weight),
-      ]
-    : [];
-
-  return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(180deg, #fff8fa 0%, #fffdfd 48%, #fff5f7 100%)',
-        padding: '24px 16px 48px',
-        fontFamily: 'Arial, Helvetica, sans-serif',
-      }}
-    >
-      <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '0px', position: 'relative', paddingTop: '0px' }}>
-          <img
-            src={logoDoctor}
-            alt="Dr. Alex Mercado"
-            style={{ maxWidth: '280px', width: '100%', height: 'auto', display: 'block', margin: '0 auto' }}
-          />
-
-          <div style={{ marginTop: '-35px' }}>
-            <img
-              src={logoMaternidad}
-              alt="Maternidad 360"
-              style={{ maxWidth: '250px', width: '100%', height: 'auto', display: 'block', margin: '0 auto' }}
-            />
+  }
+  const sections = [
+    { key: 'inicio', icon: '♡', label: 'Inicio' },
+    { key: 'citas', icon: '▦', label: 'Citas' },
+    { key: 'urgencias', icon: '✚', label: 'Urgencias' },
+    { key: 'sintomas', icon: '✎', label: 'Síntomas' },
+    { key: 'parto', icon: '⏱', label: 'Parto' },
+    { key: 'dietas', icon: '◈', label: 'Dietas' },
+  ];
+  function selectSection(key) {
+    setActiveSection(key);
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${key === 'urgencias' ? '#urgencias' : ''}`);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  return <div className="app-shell">
+    <header className="brand-bar"><div className="wrap brand-inner"><img src={doctorLogo} alt="Dr. Alex Mercado · Ginecología, obstetricia y colposcopía" /><a className="booking-button" href={APPOINTMENT_URL} target="_blank" rel="noreferrer">Reservar una cita ↗</a></div></header>
+    <nav className="app-nav" aria-label="Secciones de la app"><div className="app-nav-inner">{sections.map(section => <button key={section.key} type="button" className={`${activeSection === section.key ? 'active' : ''} ${section.key === 'urgencias' ? 'urgent-nav-button' : ''}`} aria-current={activeSection === section.key ? 'page' : undefined} onClick={() => selectSection(section.key)}><span aria-hidden="true">{section.icon}</span><small>{section.label}</small></button>)}</div></nav>
+    <main className="wrap main-content">
+      {activeSection === 'citas' && <Appointments />}
+      {activeSection === 'sintomas' && <Symptoms currentWeek={result?.weeks} />}
+      {activeSection === 'parto' && <Labor />}
+      {activeSection === 'dietas' && <Diets currentWeek={result?.weeks} />}
+      {activeSection === 'urgencias' && <Emergency />}
+      {activeSection === 'inicio' && <>
+      <h1 className="page-title">Conoce tus semanas de embarazo</h1>
+      <div className="main-grid">
+        <section className="entry-card" aria-label="Datos para calcular">
+          <div className="method-switch" role="group" aria-label="Método de cálculo">
+            <button type="button" className={mode === 'fur' ? 'selected' : ''} aria-pressed={mode === 'fur'} onClick={() => setMode('fur')}>Última regla</button>
+            <button type="button" className={mode === 'us' ? 'selected' : ''} aria-pressed={mode === 'us'} onClick={() => setMode('us')}>Ultrasonido</button>
           </div>
-
-          <h1
-            style={{
-              margin: '6px 0 2px',
-              fontSize: '20px',
-              lineHeight: 1.2,
-              color: '#53434a',
-            }}
-          >
-            {result ? (
-              <>
-                <span style={{ display: 'block' }}>Tu bebé tiene {result.weeks} semanas 💕</span>
-                <span style={{ display: 'block', fontSize: '16px', fontWeight: 600 }}>
-                  ({result.trimester})
-                </span>
-              </>
-            ) : (
-              'Semanas de embarazo al instante'
-            )}
-          </h1>
-          <p
-            style={{
-              margin: '0px',
-              lineHeight: 1.2,
-              fontSize: '15px',
-              color: '#7a6871',
-              maxWidth: '520px',
-              marginInline: 'auto',
-            }}
-          >
-            Obtén fácil y rápido las semanas de gestación de tu bebé
-          </p>
-        </div>
-
-        <div style={{ ...cardStyle(), marginBottom: '20px' }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '10px',
-              marginBottom: '20px',
-            }}
-          >
-            <button
-              onClick={() => setMode('fur')}
-              style={{
-                padding: '14px 16px',
-                borderRadius: '16px',
-                border: mode === 'fur' ? '1px solid #c98ca0' : '1px solid #e4d5da',
-                background: mode === 'fur' ? '#f8e7ed' : '#fff',
-                color: '#5e4b53',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              Calcular por FUR
-            </button>
-
-            <button
-              onClick={() => setMode('us')}
-              style={{
-                padding: '14px 16px',
-                borderRadius: '16px',
-                border: mode === 'us' ? '1px solid #c98ca0' : '1px solid #e4d5da',
-                background: mode === 'us' ? '#f8e7ed' : '#fff',
-                color: '#5e4b53',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              Calcular por ultrasonido
-            </button>
-          </div>
-
-          {mode === 'fur' ? (
-            <div>
-              <label style={labelStyle()}>Fecha de última regla</label>
-              <input
-                type="date"
-                value={fur}
-                onChange={(e) => setFur(e.target.value)}
-                style={inputStyle()}
-              />
-              <p style={{ margin: '12px 0 0', fontSize: '13px', color: '#8a7a82' }}>
-                Úsalo cuando la fecha de última menstruación sea confiable.
-              </p>
+          {mode === 'fur' ? <div className="fields"><label htmlFor="fur">Primer día de tu última regla</label><input id="fur" type="date" max={today} value={fur} onChange={event => setFur(event.target.value)} /></div> : <div className="fields"><label htmlFor="us-date">Fecha del ultrasonido</label><input id="us-date" type="date" max={today} value={usDate} onChange={event => setUsDate(event.target.value)} /><div className="field-pair"><div><label htmlFor="us-weeks">Semanas</label><input id="us-weeks" type="number" inputMode="numeric" min="0" max="42" placeholder="12" value={usWeeks} onChange={event => setUsWeeks(event.target.value)} /></div><div><label htmlFor="us-days">Días</label><input id="us-days" type="number" inputMode="numeric" min="0" max="6" placeholder="3" value={usDays} onChange={event => setUsDays(event.target.value)} /></div></div></div>}
+          {error && <p className="error-message" role="alert">{error}</p>}
+          <div className="entry-share"><button className="share-button" type="button" onClick={shareCalculator}><span aria-hidden="true">↗</span> Compartir calculadora</button><span role="status">{shareStatus}</span></div>
+        </section>
+        <section className={'summary-card' + (result ? ' ready' : '')} aria-live="polite" aria-label="Resultado de la calculadora">
+          {result ? <>
+            <div className="visual-scene">
+              <div className="baby-visual">{growth.image ? <img src={growth.image} alt={`Ilustración orientativa del desarrollo fetal: ${growth.imageStage}`} /> : <span aria-hidden="true">✳</span>}</div>
+              <div className="compare-visual" role="img" aria-label={`Referencia de tamaño: ${growth.comparisonName}`}><span className="compare-emoji" aria-hidden="true">{growth.visual}</span><span className="compare-name">{growth.comparisonName}</span></div>
             </div>
-          ) : (
-            <div>
-              <label style={labelStyle()}>Fecha del ultrasonido</label>
-              <input
-                type="date"
-                value={usDate}
-                onChange={(e) => setUsDate(e.target.value)}
-                style={{ ...inputStyle(), marginBottom: '14px' }}
-              />
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div>
-                  <label style={labelStyle()}>Semanas reportadas</label>
-                  <input
-                    placeholder="Ej. 12"
-                    type="number"
-                    value={usWeeks}
-                    onChange={(e) => setUsWeeks(e.target.value)}
-                    style={inputStyle()}
-                  />
-                </div>
-                <div>
-                  <label style={labelStyle()}>Días reportados</label>
-                  <input
-                    placeholder="Ej. 3"
-                    type="number"
-                    value={usDays}
-                    onChange={(e) => setUsDays(e.target.value)}
-                    style={inputStyle()}
-                  />
-                </div>
-              </div>
-              <p style={{ margin: '12px 0 0', fontSize: '13px', color: '#8a7a82' }}>
-                Ideal para actualizar la edad gestacional a partir de un ultrasonido previo.
-              </p>
+            <p className="length-line">{growth.length === null ? result.weeks > 40 ? 'Mi talla se valora en consulta' : 'Aún es pronto para estimar mi longitud' : <>En esta semana mido aprox. <strong>{formatLength(growth.length)} cm</strong><small>{growth.lengthBasis}</small></>}</p>
+            <div className="week-display"><strong>{result.weeks} semanas, {result.days} días</strong></div>
+            <div className="facts-row">
+              <div className="fact"><span>FECHA EN QUE CUMPLES 40 SEMANAS</span><strong>{formatDate(result.due)}</strong></div>
             </div>
-          )}
-
-          <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-            <a
-              href={whatsappLink}
-              target="_blank"
-              rel="noreferrer"
-              style={{ textDecoration: 'none', flex: 1 }}
-              onClick={() => {
-                if (typeof window === 'undefined') return;
-                try {
-                  const clicks = parseInt(window.localStorage.getItem('consultClicks') || '0', 10);
-                  window.localStorage.setItem('consultClicks', String(clicks + 1));
-                } catch {
-                  // no-op
-                }
-              }}
-            >
-              <button
-                style={{
-                  width: '100%',
-                  padding: '15px 10px',
-                  border: 'none',
-                  borderRadius: '16px',
-                  background: '#25D366',
-                  color: '#fff',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: '0 14px 24px rgba(37, 211, 102, 0.25)',
-                }}
-              >
-                Agenda una consulta conmigo
-              </button>
-            </a>
-
-            <button
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  try {
-                    const shares = parseInt(window.localStorage.getItem('shareClicks') || '0', 10);
-                    window.localStorage.setItem('shareClicks', String(shares + 1));
-                  } catch {
-                    // no-op
-                  }
-                }
-                const url = APP_SHARE_URL;
-                if (navigator.share) {
-                  navigator.share({ url });
-                } else {
-                  window.open(`https://wa.me/?text=${encodeURIComponent(url)}`);
-                }
-              }}
-              style={{
-                flex: 1,
-                padding: '15px 10px',
-                border: 'none',
-                borderRadius: '16px',
-                background: '#ff6f61',
-                color: '#fff',
-                fontSize: '14px',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              Compartir con otra mamá
-            </button>
-          </div>
-        </div>
-
-        <div style={cardStyle()}>
-          {result ? (
-            <>
-              <div
-                style={{
-                  background: 'linear-gradient(135deg, #fff1f5, #ffe4ec)',
-                  border: '1px solid #f3c6d3',
-                  borderRadius: '20px',
-                  padding: '16px',
-                  marginBottom: '16px',
-                  textAlign: 'center',
-                }}
-              >
-                <div style={{ fontWeight: 700, color: '#8a4b63', fontSize: '14px', marginBottom: '6px' }}>
-                  ¿Estás embarazada o planeando un embarazo?
-                </div>
-                <div style={{ fontSize: '13px', color: '#6f5a63', marginBottom: '12px' }}>
-                  Únete a mi Diplomado Maternidad 360 y vive tu embarazo con información, seguridad y acompañamiento.
-                </div>
-                <a
-                  href="https://wa.me/528443934366?text=Hola%20Dr.%20Alex%20Mercado,%20quiero%20informes%20del%20Diplomado%20Maternidad%20360"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ textDecoration: 'none' }}
-                >
-                  <button
-                    style={{
-                      background: '#c98ca0',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '14px',
-                      padding: '12px 18px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Quiero información del diplomado
-                  </button>
-                </a>
-              </div>
-
-              <div
-                style={{
-                  background: '#fff3f7',
-                  border: '1px solid #f0d6df',
-                  borderRadius: '18px',
-                  padding: '14px 16px',
-                  marginBottom: '12px',
-                  textAlign: 'center',
-                  color: '#745664',
-                  fontSize: '13px',
-                  lineHeight: 1.4,
-                }}
-              >
-                <strong>{result.tip}</strong>
-              </div>
-
-              <div
-                style={{
-                  background: '#fff0f0',
-                  border: '1px solid #f0d0d0',
-                  borderRadius: '18px',
-                  padding: '14px 16px',
-                  marginBottom: '16px',
-                  textAlign: 'center',
-                  color: '#7c5b5b',
-                  fontSize: '13px',
-                  lineHeight: 1.4,
-                }}
-              >
-                <strong>{result.urgency}</strong>
-              </div>
-
-              <div style={{ textAlign: 'center', marginBottom: '22px' }}>
-                <div
-                  style={{
-                    display: 'inline-block',
-                    background: '#f7e7ec',
-                    color: '#9a6174',
-                    padding: '8px 14px',
-                    borderRadius: '999px',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    letterSpacing: '0.04em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Edad gestacional actual
-                </div>
-                <div style={{ fontSize: '84px', fontWeight: 700, lineHeight: 1, color: '#524149', marginTop: '14px' }}>
-                  {result.weeks}
-                </div>
-                <div style={{ fontSize: '28px', fontWeight: 700, color: '#6f5a63' }}>
-                  semanas + {result.days} días
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                {dataCards.map((item) => (
-                  <div
-                    key={item.title}
-                    style={{
-                      background: '#fff7f9',
-                      border: '1px solid #eedde3',
-                      borderRadius: '18px',
-                      padding: '16px',
-                    }}
-                  >
-                    <div style={{ fontSize: '12px', color: '#8d7b83', marginBottom: '8px', fontWeight: 700 }}>
-                      {item.title}
-                    </div>
-                    <div style={{ fontSize: '17px', color: '#55454c', fontWeight: 700 }}>{item.value}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div
-                style={{
-                  marginTop: '18px',
-                  background: '#fff8ef',
-                  border: '1px solid #f0dfb9',
-                  borderRadius: '18px',
-                  padding: '16px',
-                  fontSize: '13px',
-                  color: '#7a6848',
-                  lineHeight: 1.55,
-                }}
-              >
-                <strong>Cálculo orientativo.</strong> La edad gestacional definitiva debe correlacionarse con valoración médica y ultrasonido, especialmente si existen discrepancias.
-              </div>
-
-              <div
-                style={{
-                  marginTop: '14px',
-                  background: '#f8f5f6',
-                  border: '1px solid #e8dee2',
-                  borderRadius: '18px',
-                  padding: '16px',
-                  fontSize: '13px',
-                  color: '#706068',
-                  lineHeight: 1.55,
-                }}
-              >
-                <strong>Lógica clínica orientativa:</strong> si la FUR es confiable, puede utilizarse como base inicial. Si el ultrasonido temprano muestra discrepancias relevantes, debe darse prioridad a la correlación clínica y médica con ultrasonido.
-              </div>
-            </>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '24px 8px' }}>
-              <div style={{ fontSize: '26px', fontWeight: 700, color: '#5b4b52', marginBottom: '10px' }}>
-                Ingresa tus datos
-              </div>
-              <div style={{ fontSize: '15px', color: '#83717a', lineHeight: 1.6 }}>
-                Selecciona el método de cálculo y obtén semanas de embarazo, trimestre actual, fecha probable de parto y medidas aproximadas del bebé.
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: '0px' }}>
-          <img
-            src={logoAXM}
-            alt="AXM Technologies"
-            style={{
-              maxWidth: '160px',
-              width: '100%',
-              height: 'auto',
-              opacity: 0.8,
-              display: 'block',
-              margin: '0 auto -48px',
-            }}
-          />
-          <div style={{ color: '#96828b', fontSize: '13px', marginTop: '0px', lineHeight: 1 }}>
-            powered by AXM technologies
-          </div>
-        </div>
+            <p className="result-note">Ilustración y medidas orientativas. Las 40 semanas son una referencia, no un límite médico.</p>
+          </> : <div className="empty-result"><span aria-hidden="true">♡</span><strong>Tu bebé, semana a semana</strong><p>Ingresa una fecha para ver tu resultado.</p></div>}
+        </section>
       </div>
-    </div>
-  );
+      <div className="share-actions"><button className="share-button" type="button" onClick={shareCalculator}><span aria-hidden="true">↗</span> Compartir calculadora</button><span role="status">{shareStatus}</span></div>
+      </>}
+    </main>
+  </div>;
 }
