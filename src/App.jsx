@@ -146,9 +146,9 @@ export default function App() {
             <p className="length-line">{growth.length === null ? result.weeks > 40 ? 'Mi talla se valora en consulta' : 'Aún es pronto para estimar mi longitud' : <>En esta semana mido aprox. <strong>{formatLength(growth.length)} cm</strong><small>{growth.lengthBasis}</small></>}</p>
             <div className="week-display"><strong>{result.weeks} semanas, {result.days} días</strong></div>
             <div className="facts-row">
-              <div className="fact"><span>FECHA EN QUE CUMPLES 40 SEMANAS</span><strong>{formatDate(result.due)}</strong></div>
+              <div className="fact"><span>FECHA MÁXIMA PARA EL PARTO</span><strong>{formatDate(result.due)}</strong></div>
             </div>
-            <p className="result-note">{result.manual ? 'Fecha calculada con las semanas que escribiste. Ilustración y medidas orientativas.' : 'Ilustración y medidas orientativas. Las 40 semanas son una referencia, no un límite médico.'}</p>
+            <p className="result-note">{result.manual ? 'Fecha calculada con las semanas que escribiste. Ilustración y medidas orientativas. Las 40 semanas son una referencia, no un límite médico.' : 'Ilustración y medidas orientativas. Las 40 semanas son una referencia, no un límite médico.'}</p>
           </> : <div className="empty-result"><span aria-hidden="true">♡</span><strong>Tu bebé, semana a semana</strong><p>{mode === 'manual' ? 'Escribe tus semanas para ver a tu bebé.' : 'Ingresa una fecha para ver tu resultado.'}</p></div>}
         </section>
       </div>
