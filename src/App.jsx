@@ -148,7 +148,6 @@ export default function App() {
             <div className="facts-row">
               <div className="fact"><span>FECHA MÁXIMA PARA EL PARTO</span><strong>{formatDate(result.due)}</strong></div>
             </div>
-            <p className="result-note">{result.manual ? 'Fecha calculada con las semanas que escribiste. Ilustración y medidas orientativas. Las 40 semanas son una referencia, no un límite médico.' : 'Ilustración y medidas orientativas. Las 40 semanas son una referencia, no un límite médico.'}</p>
           </> : <div className="empty-result"><span aria-hidden="true">♡</span><strong>Tu bebé, semana a semana</strong><p>{mode === 'manual' ? 'Escribe tus semanas para ver a tu bebé.' : 'Ingresa una fecha para ver tu resultado.'}</p></div>}
         </section>
       </div>
