@@ -4,7 +4,7 @@ const PHONE = '844 189 2008';
 const CALL_URL = 'tel:+528441892008';
 const MAPS_URL = 'https://maps.app.goo.gl/mAXJE8mSYJvik4Ex8';
 const DIRECTIONS_URL = 'https://www.google.com/maps/dir/?api=1&destination=25.4771829%2C-100.9786991';
-const SHARE_URL = 'https://calculadora-gestacional.vercel.app/#urgencias';
+const SHARE_URL = 'https://dralexmercado.com.mx/calculadora#urgencias';
 const ADDRESS = 'Carretera Saltillo–Monterrey km 4.5, Las Brisas, C.P. 25210, Saltillo, Coahuila';
 
 export default function Emergency() {

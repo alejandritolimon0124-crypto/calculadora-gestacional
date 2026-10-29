@@ -8,7 +8,7 @@ import './sections.css';
 
 const KEY = 'calcData';
 const DAY = 86400000;
-const SHARE_URL = 'https://calculadora-gestacional.vercel.app/';
+const SHARE_URL = 'https://dralexmercado.com.mx/calculadora';
 const APPOINTMENT_URL = 'https://wa.me/528446001824?text=Hola%20Dr.%20Alex%20Mercado%2C%20me%20gustar%C3%ADa%20reservar%20una%20cita.';
 
 function parseDate(value) {
