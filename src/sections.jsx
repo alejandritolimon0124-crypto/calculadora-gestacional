@@ -135,10 +135,10 @@ export function Labor() {
 }
 
 const DIETS = [
-  { title: 'Primer trimestre', range: 'Antes y semanas 0 a 13', image: '/dietas/primer-trimestre.jpg' },
-  { title: 'Segundo trimestre', range: 'Semanas 14 a 27', image: '/dietas/segundo-trimestre.jpg' },
-  { title: 'Tercer trimestre', range: 'Desde la semana 28', image: '/dietas/tercer-trimestre.jpg' },
-  { title: 'Lactancia', range: 'Después del nacimiento', image: '/dietas/lactancia.jpg' },
+  { title: 'Primer trimestre', range: 'Antes y semanas 0 a 13', image: `${import.meta.env.BASE_URL}dietas/primer-trimestre.jpg` },
+  { title: 'Segundo trimestre', range: 'Semanas 14 a 27', image: `${import.meta.env.BASE_URL}dietas/segundo-trimestre.jpg` },
+  { title: 'Tercer trimestre', range: 'Desde la semana 28', image: `${import.meta.env.BASE_URL}dietas/tercer-trimestre.jpg` },
+  { title: 'Lactancia', range: 'Después del nacimiento', image: `${import.meta.env.BASE_URL}dietas/lactancia.jpg` },
 ];
 
 export function Diets({ currentWeek }) {

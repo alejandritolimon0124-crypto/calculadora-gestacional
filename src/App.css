@@ -90,3 +90,8 @@
   .share-button{font-size:16px}
 }
 @media(max-width:370px){.page-title{font-size:26px}.compare-visual{width:102px;min-height:102px}.compare-name{font-size:12px}.fact strong{font-size:18px}}
+.visual-scene{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;justify-items:center}
+.baby-visual{width:min(100%,260px)}
+.compare-visual{position:relative;right:auto;bottom:auto;align-self:center;transform:none}
+@media(max-width:760px){.visual-scene{column-gap:8px}.baby-visual{width:min(100%,200px)}}
+@media(max-width:370px){.visual-scene{column-gap:6px}.baby-visual{width:100%}}

@@ -77,7 +77,7 @@ export function babyGrowthAtWeek(week, days = 0) {
     return {
       comparisonName,
       visual,
-      image: week < 6 ? null : week < 11 ? '/baby-week-8.jpg' : '/baby-week-14.jpg',
+      image: week < 6 ? null : week < 11 ? `${import.meta.env.BASE_URL}baby-week-8.jpg` : `${import.meta.env.BASE_URL}baby-week-14.jpg`,
       imageStage: week < 6 ? null : week < 11 ? 'primeras semanas' : 'segundo trimestre temprano',
       length: approximateLength(week, days),
       lengthBasis: week < 6 ? null : 'de cabeza a nalgas',
@@ -90,7 +90,7 @@ export function babyGrowthAtWeek(week, days = 0) {
   return {
     comparisonName: comparison[1],
     visual: comparison[2],
-    image: week < 32 ? '/baby-week-20.jpg' : '/baby-week-40.jpg',
+    image: week < 32 ? `${import.meta.env.BASE_URL}baby-week-20.jpg` : `${import.meta.env.BASE_URL}baby-week-40.jpg`,
     imageStage: week < 32 ? 'segundo trimestre' : 'tercer trimestre',
     length: approximateLength(week, days),
     lengthBasis: week > 40 ? null : 'de cabeza a talón',
